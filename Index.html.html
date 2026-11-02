@@ -1,0 +1,1234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SpatialSpend — Behavioral Fintech & Geospatial UX Case Study</title>
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <!-- Typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cabinet+Grotesk:wght@700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+            display: ['"Cabinet Grotesk"', '"Plus Jakarta Sans"', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          },
+          colors: {
+            brand: {
+              400: '#818cf8',
+              500: '#6366f1',
+              600: '#4f46e5',
+              700: '#4338ca',
+            },
+            surface: {
+              950: '#070a12',
+              900: '#0c111d',
+              850: '#111827',
+              800: '#161f33',
+              750: '#1e2942',
+              700: '#253452',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Sleek custom scrollbars */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #070a12; }
+    ::-webkit-scrollbar-thumb { background: #1e2942; border-radius: 9999px; }
+    ::-webkit-scrollbar-thumb:hover { background: #334366; }
+
+    /* Glassmorphic cards */
+    .glass-card {
+      background: rgba(17, 24, 39, 0.72);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+    }
+    .glass-card-hover:hover {
+      border-color: rgba(99, 102, 241, 0.35);
+      background: rgba(22, 31, 51, 0.85);
+    }
+
+    /* iPhone device aesthetic */
+    .iphone-shell {
+      box-shadow: 0 30px 90px -20px rgba(0, 0, 0, 0.95), 0 0 0 10px #131b2e, 0 0 0 12px #22304d;
+    }
+
+    /* Pulse radar effect for active pins */
+    @keyframes radar-pulse {
+      0% { transform: scale(1); opacity: 0.9; }
+      50% { transform: scale(1.6); opacity: 0.2; }
+      100% { transform: scale(1); opacity: 0.9; }
+    }
+    .radar-beacon {
+      animation: radar-pulse 2.2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+
+    /* Sheet transitions */
+    .sheet-spring {
+      transition: height 0.32s cubic-bezier(0.16, 1, 0.3, 1), transform 0.32s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+  </style>
+</head>
+<body class="bg-surface-950 text-slate-100 font-sans antialiased selection:bg-brand-500 selection:text-white min-h-screen flex flex-col overflow-x-hidden">
+
+  <!-- ======================================================== -->
+  <!-- TOP GLOBAL CONTROLLER HEADER                             -->
+  <!-- ======================================================== -->
+  <header class="sticky top-0 z-50 bg-surface-900/90 backdrop-blur-xl border-b border-surface-750 px-4 sm:px-8 py-3.5 flex items-center justify-between">
+    <!-- Brand & Project Badge -->
+    <div class="flex items-center space-x-3.5">
+      <!-- Improvised Custom Geometric Logo Mark -->
+      <div class="relative group cursor-pointer">
+        <div class="absolute -inset-1 bg-gradient-to-r from-brand-500 via-indigo-500 to-cyan-400 rounded-2xl blur-sm opacity-60 group-hover:opacity-100 transition duration-300"></div>
+        <div class="relative w-10 h-10 rounded-2xl bg-gradient-to-br from-[#0c1222] to-[#161f36] border border-white/15 flex items-center justify-center p-2 shadow-2xl">
+          <svg class="w-full h-full" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="logoGrad" x1="2" y1="4" x2="34" y2="34" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stop-color="#38bdf8"/>
+                <stop offset="45%" stop-color="#6366f1"/>
+                <stop offset="100%" stop-color="#a855f7"/>
+              </linearGradient>
+              <linearGradient id="innerGrad" x1="10" y1="10" x2="26" y2="26" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stop-color="#ffffff"/>
+                <stop offset="100%" stop-color="#c7d2fe"/>
+              </linearGradient>
+            </defs>
+            <!-- Outer Geometric Hex/Diamond Node Ring -->
+            <path d="M18 3L31 10.5V25.5L18 33L5 25.5V10.5L18 3Z" stroke="url(#logoGrad)" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/>
+            <!-- Spatial Location Pin Core with Compass Pulse -->
+            <path d="M18 8C14.134 8 11 11.134 11 15C11 19.5 18 27 18 27C18 27 25 19.5 25 15C25 11.134 21.866 8 18 8Z" fill="url(#logoGrad)" fill-opacity="0.3" stroke="url(#logoGrad)" stroke-width="1.6"/>
+            <!-- Center Currency/Location Node -->
+            <circle cx="18" cy="14.5" r="3" fill="url(#innerGrad)"/>
+            <circle cx="18" cy="14.5" r="1.2" fill="#4338ca"/>
+          </svg>
+        </div>
+      </div>
+
+      <div>
+        <div class="flex items-center gap-2">
+          <span class="font-display font-black text-lg text-white tracking-tight flex items-center">
+            Spatial<span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-400 to-cyan-300">Spend</span>
+          </span>
+          <span class="text-[10px] uppercase font-mono tracking-wider px-2.5 py-0.5 rounded-full bg-brand-500/10 text-brand-400 border border-brand-500/25 font-bold shadow-sm">
+            UI/UX Case Study
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- View Mode Switcher -->
+    <div class="flex items-center bg-surface-950 p-1 rounded-2xl border border-surface-750 text-xs">
+      <button onclick="switchView('split')" id="nav-btn-split" class="px-3.5 py-1.5 rounded-xl font-semibold transition-all duration-200 bg-brand-600 text-white shadow-sm flex items-center gap-1.5">
+        <i class="fa-solid fa-columns"></i>
+        <span class="hidden sm:inline">Split Canvas</span>
+      </button>
+      <button onclick="switchView('study')" id="nav-btn-study" class="px-3.5 py-1.5 rounded-xl font-semibold transition-all duration-200 text-slate-400 hover:text-white flex items-center gap-1.5">
+        <i class="fa-solid fa-book-open"></i>
+        <span class="hidden sm:inline">Editorial Story</span>
+      </button>
+      <button onclick="switchView('proto')" id="nav-btn-proto" class="px-3.5 py-1.5 rounded-xl font-semibold transition-all duration-200 text-slate-400 hover:text-white flex items-center gap-1.5">
+        <i class="fa-solid fa-mobile-screen"></i>
+        <span class="hidden sm:inline">App Prototype</span>
+      </button>
+    </div>
+
+    <!-- Quick Meta Indicators -->
+    <div class="hidden lg:flex items-center gap-3 text-xs text-slate-400">
+      <span class="flex items-center gap-1.5 font-medium"><i class="fa-solid fa-shield-halved text-emerald-400"></i> Zero API Keys</span>
+      <span class="w-1 h-1 rounded-full bg-surface-700"></span>
+      <span class="flex items-center gap-1.5 font-medium"><i class="fa-solid fa-microchip text-indigo-400"></i> Dual Geocoding Engine</span>
+    </div>
+  </header>
+
+  <!-- ======================================================== -->
+  <!-- MAIN WORKSPACE GRID                                      -->
+  <!-- ======================================================== -->
+  <main class="flex-1 w-full max-w-[1720px] mx-auto p-4 sm:p-6 lg:p-8">
+    <div id="workspace-grid" class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+
+      <!-- ==================================================== -->
+      <!-- COLUMN 1: BEHANCE-STYLE EDITORIAL CASE STUDY         -->
+      <!-- ==================================================== -->
+      <article id="editorial-col" class="lg:col-span-7 space-y-16 transition-all duration-300 pb-24">
+
+        <!-- HERO DISPLAY -->
+        <div class="glass-card rounded-[32px] p-8 sm:p-12 relative overflow-hidden">
+          <div class="absolute -right-24 -top-24 w-96 h-96 bg-brand-500/10 rounded-full blur-3xl pointer-events-none"></div>
+          
+          <div class="flex flex-wrap gap-2.5 mb-6">
+            <span class="px-3 py-1 rounded-full text-xs font-semibold bg-brand-500/10 text-brand-300 border border-brand-500/20">Behavioral Fintech</span>
+            <span class="px-3 py-1 rounded-full text-xs font-semibold bg-cyan-500/10 text-cyan-300 border border-cyan-500/20">UI/UX Case Study</span>
+            <span class="px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-300 border border-emerald-500/20">Geospatial UI</span>
+            <span class="px-3 py-1 rounded-full text-xs font-semibold bg-purple-500/10 text-purple-300 border border-purple-500/20">Mobile Systems</span>
+          </div>
+
+          <h1 class="text-4xl sm:text-5xl lg:text-6xl font-black text-white font-display tracking-tight leading-[1.08] mb-6">
+            Re-architecting Financial Memory with SpatialSpend
+          </h1>
+
+          <p class="text-lg sm:text-xl text-slate-300 font-normal leading-relaxed max-w-3xl mb-10">
+            A comprehensive UI/UX case study and product design exploration into why humans struggle with transaction ledgers—and how anchoring purchases to physical geography reduces fraud support costs by 32%.
+          </p>
+
+          <!-- Editorial Meta Strip -->
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-6 pt-8 border-t border-surface-750 text-xs">
+            <div>
+              <span class="text-slate-400 block font-mono uppercase tracking-wider text-[10px]">Role</span>
+              <p class="text-white font-bold text-sm mt-1">Lead UI/UX Designer</p>
+            </div>
+            <div>
+              <span class="text-slate-400 block font-mono uppercase tracking-wider text-[10px]">Scope</span>
+              <p class="text-white font-bold text-sm mt-1">iOS & Design System</p>
+            </div>
+            <div>
+              <span class="text-slate-400 block font-mono uppercase tracking-wider text-[10px]">Key Outcome</span>
+              <p class="text-emerald-400 font-bold text-sm mt-1">-32% False Inquiries</p>
+            </div>
+            <div>
+              <span class="text-slate-400 block font-mono uppercase tracking-wider text-[10px]">Recall Velocity</span>
+              <p class="text-brand-400 font-bold text-sm mt-1">3.8x Faster Verification</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 01. THE PROBLEM: CRYPTIC BILLING ALIASES -->
+        <section class="space-y-6">
+          <div class="flex items-center gap-3">
+            <span class="w-8 h-8 rounded-lg bg-rose-500/10 text-rose-400 flex items-center justify-center font-mono font-bold text-sm border border-rose-500/20">01</span>
+            <h2 class="text-2xl sm:text-3xl font-extrabold text-white font-display">The Problem: Cryptic Ledger Syndrome</h2>
+          </div>
+
+          <div class="glass-card rounded-2xl p-6 sm:p-8 space-y-6">
+            <p class="text-slate-300 text-sm sm:text-base leading-relaxed">
+              Every cardholder statement is rendered in uppercase, parent-LLC acronyms. A boutique florist displays as <code class="px-2 py-0.5 rounded bg-surface-900 text-rose-400 font-mono text-xs">SQ *CRNR-RET-0982 SF</code>. At month-end, users review their charges, fail to recognize the string, panic, and report legitimate transactions as stolen cards.
+            </p>
+
+            <!-- Contrast Comparison Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+              <div class="p-5 rounded-2xl bg-rose-950/20 border border-rose-900/40 space-y-3">
+                <div class="flex items-center justify-between text-xs font-bold text-rose-400">
+                  <span class="flex items-center gap-1.5"><i class="fa-solid fa-triangle-exclamation"></i> Legacy Statement</span>
+                  <span class="font-mono text-[10px]">High Friction</span>
+                </div>
+                <div class="p-3 bg-surface-950 rounded-xl border border-rose-900/30 space-y-1 font-mono text-xs">
+                  <p class="text-rose-300 font-bold">SQ *BLU-BTL-0948 SF CA</p>
+                  <p class="text-slate-500 text-[11px]">$6.50 · 24-OCT 08:42 AM</p>
+                </div>
+                <p class="text-xs text-slate-400 leading-relaxed">
+                  Triggers cognitive disconnect: "Did someone steal my card in San Francisco?"
+                </p>
+              </div>
+
+              <div class="p-5 rounded-2xl bg-emerald-950/20 border border-emerald-900/40 space-y-3">
+                <div class="flex items-center justify-between text-xs font-bold text-emerald-400">
+                  <span class="flex items-center gap-1.5"><i class="fa-solid fa-circle-check"></i> SpatialSpend Map Anchor</span>
+                  <span class="font-mono text-[10px]">Instant Recall</span>
+                </div>
+                <div class="p-3 bg-surface-950 rounded-xl border border-emerald-900/30 space-y-1 text-xs">
+                  <p class="text-emerald-300 font-bold">Blue Bottle Coffee · Mint Plaza</p>
+                  <p class="text-slate-400 text-[11px] flex items-center gap-1">
+                    <i class="fa-solid fa-location-dot text-emerald-400"></i> Next to Powell BART subway exit
+                  </p>
+                </div>
+                <p class="text-xs text-slate-400 leading-relaxed">
+                  Physical landmarks instantly trigger autobiographical memory of the morning latte.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 02. INTERACTIVE MERCHANT DECODER PLAYGROUND -->
+        <section class="space-y-6">
+          <div class="flex items-center gap-3">
+            <span class="w-8 h-8 rounded-lg bg-brand-500/10 text-brand-400 flex items-center justify-center font-mono font-bold text-sm border border-brand-500/20">02</span>
+            <h2 class="text-2xl sm:text-3xl font-extrabold text-white font-display">Interactive Merchant Decoder Lab</h2>
+          </div>
+
+          <div class="glass-card rounded-2xl p-6 sm:p-8 space-y-5">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+              <p class="text-xs sm:text-sm text-slate-300 font-medium">
+                Try selecting or typing messy bank statement entries to test the dual-pipeline entity resolution engine:
+              </p>
+              <span class="text-[11px] font-mono text-brand-400 bg-brand-500/10 px-2 py-0.5 rounded border border-brand-500/20 shrink-0">Live Simulation</span>
+            </div>
+
+            <!-- Quick Pill Preset Selectors -->
+            <div class="flex flex-wrap gap-2 text-xs">
+              <button onclick="setDecoderEntry(0)" class="px-3 py-1.5 rounded-xl bg-surface-800 hover:bg-surface-750 text-slate-300 border border-surface-700 transition font-mono">
+                SQ *BLU-BTL-0948
+              </button>
+              <button onclick="setDecoderEntry(1)" class="px-3 py-1.5 rounded-xl bg-surface-800 hover:bg-surface-750 text-slate-300 border border-surface-700 transition font-mono">
+                BART FAREGATE 04
+              </button>
+              <button onclick="setDecoderEntry(2)" class="px-3 py-1.5 rounded-xl bg-surface-800 hover:bg-surface-750 text-slate-300 border border-surface-700 transition font-mono">
+                TST* TARTINE BKRY 994
+              </button>
+              <button onclick="setDecoderEntry(3)" class="px-3 py-1.5 rounded-xl bg-surface-800 hover:bg-surface-750 text-slate-300 border border-surface-700 transition font-mono">
+                AMZN MKTP US*29K (Online)
+              </button>
+            </div>
+
+            <!-- Live Decoder Transformation Card -->
+            <div class="p-5 bg-surface-950 rounded-2xl border border-surface-800 grid grid-cols-1 md:grid-cols-12 gap-4 items-center">
+              <div class="md:col-span-5 space-y-1">
+                <span class="text-[10px] uppercase font-mono font-bold text-slate-500">Messy Bank Input</span>
+                <p id="decoder-input" class="font-mono text-sm font-bold text-rose-400 break-all">SQ *BLU-BTL-0948 SF CA</p>
+                <span class="text-[10px] text-slate-500 block">Raw ISO-8583 Merchant Field</span>
+              </div>
+
+              <div class="md:col-span-2 flex justify-center text-brand-400 text-lg py-2 md:py-0">
+                <i class="fa-solid fa-arrow-right-long hidden md:inline"></i>
+                <i class="fa-solid fa-arrow-down-long md:hidden"></i>
+              </div>
+
+              <div class="md:col-span-5 space-y-1.5">
+                <span class="text-[10px] uppercase font-mono font-bold text-emerald-400">SpatialSpend Enriched Record</span>
+                <h4 id="decoder-name" class="font-bold text-sm text-white">Blue Bottle Coffee — Mint Plaza</h4>
+                <p id="decoder-address" class="text-xs text-slate-300">66 Mint St, San Francisco, CA</p>
+                <div class="flex items-center gap-2 pt-1">
+                  <span id="decoder-cat" class="px-2 py-0.5 rounded text-[10px] font-semibold bg-amber-500/20 text-amber-400 border border-amber-500/30">Dining & Cafés</span>
+                  <span id="decoder-status" class="px-2 py-0.5 rounded text-[10px] font-semibold bg-indigo-500/20 text-indigo-400">Mapped to Pin</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 03. COGNITIVE SCIENCE: SPATIAL VS SEMANTIC RECALL -->
+        <section class="space-y-6">
+          <div class="flex items-center gap-3">
+            <span class="w-8 h-8 rounded-lg bg-brand-500/10 text-brand-400 flex items-center justify-center font-mono font-bold text-sm border border-brand-500/20">03</span>
+            <h2 class="text-2xl sm:text-3xl font-extrabold text-white font-display">Cognitive Science: Spatial Anchoring</h2>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+            <div class="glass-card rounded-2xl p-6 space-y-3">
+              <div class="w-10 h-10 rounded-xl bg-amber-500/10 text-amber-400 flex items-center justify-center text-lg">
+                <i class="fa-solid fa-brain"></i>
+              </div>
+              <h3 class="text-base font-bold text-white">Episodic Memory</h3>
+              <p class="text-xs text-slate-300 leading-relaxed">
+                Humans reconstruct personal past events through spatio-temporal cues: walking past the fountain, sunlight angle, and neighboring landmarks.
+              </p>
+            </div>
+
+            <div class="glass-card rounded-2xl p-6 space-y-3">
+              <div class="w-10 h-10 rounded-xl bg-indigo-500/10 text-indigo-400 flex items-center justify-center text-lg">
+                <i class="fa-solid fa-route"></i>
+              </div>
+              <h3 class="text-base font-bold text-white">Commute Corridors</h3>
+              <p class="text-xs text-slate-300 leading-relaxed">
+                68% of weekday card micro-taps occur within 200m of the cardholder's regular transit artery (e.g. Market St / Powell BART).
+              </p>
+            </div>
+
+            <div class="glass-card rounded-2xl p-6 space-y-3">
+              <div class="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center text-lg">
+                <i class="fa-solid fa-hand-holding-dollar"></i>
+              </div>
+              <h3 class="text-base font-bold text-white">Zero Verification Stress</h3>
+              <p class="text-xs text-slate-300 leading-relaxed">
+                By presenting a map pin instead of a legal string, recognition latency drops from 46.5 seconds down to 8.2 seconds.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <!-- 04. USER PERSONA: THE COMMUTING PROFESSIONAL -->
+        <section class="space-y-6">
+          <div class="flex items-center gap-3">
+            <span class="w-8 h-8 rounded-lg bg-brand-500/10 text-brand-400 flex items-center justify-center font-mono font-bold text-sm border border-brand-500/20">04</span>
+            <h2 class="text-2xl sm:text-3xl font-extrabold text-white font-display">Target Persona: The Urban Commuter</h2>
+          </div>
+
+          <div class="glass-card rounded-2xl p-6 sm:p-8 space-y-6">
+            <div class="flex flex-col sm:flex-row items-start sm:items-center gap-5 pb-6 border-b border-surface-750">
+              <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-brand-600 to-cyan-500 flex items-center justify-center text-white text-2xl font-black shadow-lg shadow-brand-500/20 shrink-0">
+                <i class="fa-solid fa-compass"></i>
+              </div>
+              <div>
+                <div class="flex items-center gap-3">
+                  <h3 class="text-xl font-bold text-white">Maya Vance, 31</h3>
+                  <span class="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-brand-500/10 text-brand-300 border border-brand-500/20">Primary Cohort</span>
+                </div>
+                <p class="text-slate-400 text-xs mt-1">Sr. Technical Recruiter · Daily Transit Commuter in San Francisco</p>
+                <div class="flex flex-wrap gap-2 mt-3">
+                  <span class="text-[10px] px-2 py-0.5 rounded bg-surface-800 text-slate-300">5-7 Micro-taps / day</span>
+                  <span class="text-[10px] px-2 py-0.5 rounded bg-surface-800 text-slate-300">Contactless Apple Pay User</span>
+                  <span class="text-[10px] px-2 py-0.5 rounded bg-surface-800 text-slate-300">High Weekend Mobility</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs">
+              <div class="space-y-2">
+                <h4 class="font-bold text-rose-400 uppercase tracking-wider text-[11px] flex items-center gap-1.5">
+                  <i class="fa-solid fa-triangle-exclamation"></i> Pain Points & Blindspots
+                </h4>
+                <ul class="space-y-2 text-slate-300 list-disc list-inside leading-relaxed">
+                  <li>Taps coffee carts and pastry windows where parent LLC names are totally unrecognizable.</li>
+                  <li>Frequently pauses or locks cards believing someone is making $6 fraudulent charges.</li>
+                  <li>Spends over 30 minutes at end-of-month reconciliations sorting out expense receipts.</li>
+                </ul>
+              </div>
+
+              <div class="space-y-2">
+                <h4 class="font-bold text-emerald-400 uppercase tracking-wider text-[11px] flex items-center gap-1.5">
+                  <i class="fa-solid fa-bullseye"></i> SpatialSpend Needs
+                </h4>
+                <ul class="space-y-2 text-slate-300 list-disc list-inside leading-relaxed">
+                  <li>Single tap to see the exact street corner where contactless NFC was authorized.</li>
+                  <li>Quick memory cue (e.g. "Purchased 8 mins after exiting Caltrain").</li>
+                  <li>Automatic separation of online takeout orders from physical store visits.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 05. DESIGN SYSTEM & VISUAL TOKENS -->
+        <section class="space-y-6">
+          <div class="flex items-center gap-3">
+            <span class="w-8 h-8 rounded-lg bg-brand-500/10 text-brand-400 flex items-center justify-center font-mono font-bold text-sm border border-brand-500/20">05</span>
+            <h2 class="text-2xl sm:text-3xl font-extrabold text-white font-display">Design Tokens & Cartographic Semantics</h2>
+          </div>
+
+          <div class="glass-card rounded-2xl p-6 sm:p-8 space-y-6">
+            <!-- Color Tokens -->
+            <div>
+              <span class="text-xs font-bold text-slate-400 uppercase tracking-wider block mb-3">Semantic Category Tokens</span>
+              <div class="grid grid-cols-2 sm:grid-cols-5 gap-3">
+                <div class="p-3 bg-surface-850 rounded-xl border border-surface-750">
+                  <div class="w-full h-8 rounded-lg bg-amber-500 mb-2"></div>
+                  <p class="font-bold text-xs text-white">Dining</p>
+                  <p class="font-mono text-[10px] text-slate-400">#F59E0B</p>
+                </div>
+                <div class="p-3 bg-surface-850 rounded-xl border border-surface-750">
+                  <div class="w-full h-8 rounded-lg bg-emerald-500 mb-2"></div>
+                  <p class="font-bold text-xs text-white">Groceries</p>
+                  <p class="font-mono text-[10px] text-slate-400">#10B981</p>
+                </div>
+                <div class="p-3 bg-surface-850 rounded-xl border border-surface-750">
+                  <div class="w-full h-8 rounded-lg bg-indigo-500 mb-2"></div>
+                  <p class="font-bold text-xs text-white">Transit</p>
+                  <p class="font-mono text-[10px] text-slate-400">#6366F1</p>
+                </div>
+                <div class="p-3 bg-surface-850 rounded-xl border border-surface-750">
+                  <div class="w-full h-8 rounded-lg bg-rose-500 mb-2"></div>
+                  <p class="font-bold text-xs text-white">Retail</p>
+                  <p class="font-mono text-[10px] text-slate-400">#F43F5E</p>
+                </div>
+                <div class="p-3 bg-surface-850 rounded-xl border border-surface-750">
+                  <div class="w-full h-8 rounded-lg bg-cyan-400 mb-2"></div>
+                  <p class="font-bold text-xs text-white">Culture</p>
+                  <p class="font-mono text-[10px] text-slate-400">#22D3EE</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Typography & Pin Specs -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-surface-750 text-xs">
+              <div class="space-y-2">
+                <span class="font-bold text-slate-400 uppercase tracking-wider block">Scale & Micro-Typography</span>
+                <p class="text-slate-300 leading-relaxed">
+                  Pin typography prioritizes high-contrast font weight (Plus Jakarta Sans 800) with a dark halo drop-shadow, making amounts legible over dark asphalt street tiles.
+                </p>
+              </div>
+
+              <div class="space-y-2">
+                <span class="font-bold text-slate-400 uppercase tracking-wider block">Cartographic Suppression</span>
+                <p class="text-slate-300 leading-relaxed">
+                  Default map noise (gas stations, irrelevant business labels, building heights) was completely stripped to make financial transaction pins the dominant visual layer.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 06. ARCHITECTURAL EDGE CASES & PRIVACY -->
+        <section class="space-y-6">
+          <div class="flex items-center gap-3">
+            <span class="w-8 h-8 rounded-lg bg-brand-500/10 text-brand-400 flex items-center justify-center font-mono font-bold text-sm border border-brand-500/20">06</span>
+            <h2 class="text-2xl sm:text-3xl font-extrabold text-white font-display">Edge Cases & Ethical Privacy Guards</h2>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+            <div class="glass-card rounded-2xl p-6 space-y-3">
+              <div class="w-10 h-10 rounded-xl bg-purple-500/10 text-purple-400 flex items-center justify-center text-lg">
+                <i class="fa-solid fa-box-open"></i>
+              </div>
+              <h4 class="text-sm font-bold text-white">E-Commerce Segregation</h4>
+              <p class="text-xs text-slate-300 leading-relaxed">
+                Online orders (Amazon, Netflix, Uber Eats) do not generate false pins on server farms. They are isolated into a dedicated floating "Digital & Subscriptions" drawer.
+              </p>
+            </div>
+
+            <div class="glass-card rounded-2xl p-6 space-y-3">
+              <div class="w-10 h-10 rounded-xl bg-indigo-500/10 text-indigo-400 flex items-center justify-center text-lg">
+                <i class="fa-solid fa-train-subway"></i>
+              </div>
+              <h4 class="text-sm font-bold text-white">Subterranean Transit Taps</h4>
+              <p class="text-xs text-slate-300 leading-relaxed">
+                Subway stations have zero GPS reception. Underground NFC turns immediately snap to the station turnstile entrance node rather than drifting wildly.
+              </p>
+            </div>
+
+            <div class="glass-card rounded-2xl p-6 space-y-3">
+              <div class="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center text-lg">
+                <i class="fa-solid fa-shield-halved"></i>
+              </div>
+              <h4 class="text-sm font-bold text-white">Home Privacy Fuzzing</h4>
+              <p class="text-xs text-slate-300 leading-relaxed">
+                Transactions occurring within 250m of a cardholder's home address are given a diffuse boundary circle to prevent leaking residential locations in monthly export PDFs.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <!-- 07. MEASURABLE BUSINESS IMPACT -->
+        <section class="space-y-6">
+          <div class="flex items-center gap-3">
+            <span class="w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-400 flex items-center justify-center font-mono font-bold text-sm border border-emerald-500/20">07</span>
+            <h2 class="text-2xl sm:text-3xl font-extrabold text-white font-display">Measurable Impact & Validation</h2>
+          </div>
+
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+            <div class="p-6 bg-surface-900 border border-surface-750 rounded-2xl text-center">
+              <span class="font-display font-black text-3xl sm:text-4xl text-emerald-400 block">-32%</span>
+              <p class="text-xs text-slate-300 font-medium mt-2">Dispute Inquiries</p>
+              <span class="text-[10px] text-slate-500 block mt-1">Direct support call reduction</span>
+            </div>
+            <div class="p-6 bg-surface-900 border border-surface-750 rounded-2xl text-center">
+              <span class="font-display font-black text-3xl sm:text-4xl text-brand-400 block">64.8%</span>
+              <p class="text-xs text-slate-300 font-medium mt-2">Monthly Adoption</p>
+              <span class="text-[10px] text-slate-500 block mt-1">Users checking SpendMap</span>
+            </div>
+            <div class="p-6 bg-surface-900 border border-surface-750 rounded-2xl text-center">
+              <span class="font-display font-black text-3xl sm:text-4xl text-amber-400 block">3.8x</span>
+              <p class="text-xs text-slate-300 font-medium mt-2">Recall Speed</p>
+              <span class="text-[10px] text-slate-500 block mt-1">Faster receipt matching</span>
+            </div>
+            <div class="p-6 bg-surface-900 border border-surface-750 rounded-2xl text-center">
+              <span class="font-display font-black text-3xl sm:text-4xl text-cyan-400 block">$1.4M</span>
+              <p class="text-xs text-slate-300 font-medium mt-2">Annual Savings</p>
+              <span class="text-[10px] text-slate-500 block mt-1">Chargeback mitigation</span>
+            </div>
+          </div>
+        </section>
+
+      </article>
+
+      <!-- ==================================================== -->
+      <!-- COLUMN 2: INTERACTIVE MOBILE APP PROTOTYPE           -->
+      <!-- ==================================================== -->
+      <aside id="prototype-col" class="lg:col-span-5 sticky top-20 flex flex-col items-center">
+        
+        <!-- Prototype Action Hints -->
+        <div class="w-full max-w-[390px] flex items-center justify-between mb-3 text-xs text-slate-400 px-2">
+          <span class="flex items-center gap-1.5 font-semibold text-slate-300">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 radar-beacon"></span>
+            SpatialSpend v2.4 (Live)
+          </span>
+          <span class="font-mono text-[11px] text-brand-400">Interactive Phone</span>
+        </div>
+
+        <!-- Phone Enclosure (iPhone 16 Pro Form Factor) -->
+        <div id="phone-shell" class="w-full max-w-[390px] h-[780px] bg-surface-950 rounded-[50px] iphone-shell relative flex flex-col overflow-hidden border border-slate-700/60 select-none">
+          
+          <!-- Dynamic Island / Speaker Notch -->
+          <div class="absolute top-0 left-0 right-0 z-40 flex justify-center pt-2.5 pointer-events-none">
+            <div class="w-28 h-5 bg-black rounded-full flex items-center justify-between px-3 shadow-md">
+              <div class="w-2 h-2 rounded-full bg-slate-900"></div>
+              <div class="w-2.5 h-2.5 rounded-full bg-indigo-950/80 border border-indigo-600/50"></div>
+            </div>
+          </div>
+
+          <!-- Status Bar -->
+          <div class="pt-8 pb-1.5 px-6 bg-surface-900/90 backdrop-blur-md flex items-center justify-between text-[11px] font-semibold text-slate-300 shrink-0 z-30">
+            <span>9:41</span>
+            <div class="flex items-center gap-1.5 text-[10px]">
+              <i class="fa-solid fa-signal"></i>
+              <i class="fa-solid fa-wifi"></i>
+              <i class="fa-solid fa-battery-full text-xs"></i>
+            </div>
+          </div>
+
+          <!-- App Navigation Bar -->
+          <div class="px-5 py-2.5 bg-surface-900/90 backdrop-blur-md border-b border-surface-750/70 flex items-center justify-between shrink-0 z-30">
+            <div class="flex items-center gap-2.5">
+              <!-- Mini In-App Brand Icon -->
+              <div class="w-7 h-7 rounded-lg bg-gradient-to-tr from-brand-600 to-cyan-400 flex items-center justify-center text-white text-xs shadow-md">
+                <i class="fa-solid fa-location-dot text-[11px]"></i>
+              </div>
+              <div>
+                <div class="flex items-center gap-1 text-[10px] text-slate-400 font-bold uppercase tracking-wider">
+                  <span id="current-month-label">OCTOBER 2026</span>
+                  <button onclick="toggleMonthTimeline()" class="text-brand-400 hover:text-brand-300 ml-1">
+                    <i class="fa-solid fa-chevron-down text-[9px]"></i>
+                  </button>
+                </div>
+                <h3 id="app-total-spend" class="text-base font-extrabold text-white font-display tracking-tight leading-none mt-0.5">
+                  $1,428.60 <span class="text-[10px] font-normal text-emerald-400 ml-1 font-mono">18 Places</span>
+                </h3>
+              </div>
+            </div>
+
+            <!-- Online purchases toggle badge -->
+            <button onclick="toggleDigitalDrawer()" class="px-2.5 py-1 rounded-xl bg-surface-800 hover:bg-surface-750 border border-surface-700 text-slate-200 text-[11px] font-semibold flex items-center gap-1.5 shadow-sm transition">
+              <i class="fa-solid fa-laptop text-brand-400 text-xs"></i>
+              <span>Online (3)</span>
+            </button>
+          </div>
+
+          <!-- Filter Chips Bar -->
+          <div class="px-4 py-2 bg-surface-900/80 backdrop-blur-md border-b border-surface-800/80 flex items-center gap-1.5 overflow-x-auto no-scrollbar shrink-0 z-30">
+            <button onclick="filterAppCategory('all')" id="pill-all" class="app-filter-pill px-3 py-1 rounded-full text-[11px] font-bold bg-brand-600 text-white shadow-sm shrink-0 transition">
+              All (8)
+            </button>
+            <button onclick="filterAppCategory('dining')" id="pill-dining" class="app-filter-pill px-2.5 py-1 rounded-full text-[11px] font-semibold bg-surface-800 text-slate-300 hover:text-white shrink-0 transition flex items-center gap-1">
+              <span class="w-2 h-2 rounded-full bg-amber-500"></span> Dining
+            </button>
+            <button onclick="filterAppCategory('groceries')" id="pill-groceries" class="app-filter-pill px-2.5 py-1 rounded-full text-[11px] font-semibold bg-surface-800 text-slate-300 hover:text-white shrink-0 transition flex items-center gap-1">
+              <span class="w-2 h-2 rounded-full bg-emerald-500"></span> Groceries
+            </button>
+            <button onclick="filterAppCategory('transit')" id="pill-transit" class="app-filter-pill px-2.5 py-1 rounded-full text-[11px] font-semibold bg-surface-800 text-slate-300 hover:text-white shrink-0 transition flex items-center gap-1">
+              <span class="w-2 h-2 rounded-full bg-indigo-500"></span> Transit
+            </button>
+            <button onclick="filterAppCategory('retail')" id="pill-retail" class="app-filter-pill px-2.5 py-1 rounded-full text-[11px] font-semibold bg-surface-800 text-slate-300 hover:text-white shrink-0 transition flex items-center gap-1">
+              <span class="w-2 h-2 rounded-full bg-rose-500"></span> Retail
+            </button>
+          </div>
+
+          <!-- ================================================ -->
+          <!-- MAP CANVAS CONTAINER (Realistic Vector Street Grid) -->
+          <!-- ================================================ -->
+          <div id="map-viewport" class="relative flex-1 bg-[#0b1220] overflow-hidden">
+            
+            <!-- Scaled Stylized Dark Vector Map of Downtown San Francisco -->
+            <svg class="absolute inset-0 w-full h-full object-cover select-none pointer-events-none" viewBox="0 0 400 550" preserveAspectRatio="none">
+              <defs>
+                <linearGradient id="waterGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#0e1e33"/>
+                  <stop offset="100%" stop-color="#0a1524"/>
+                </linearGradient>
+              </defs>
+
+              <!-- SF Bay Waterbody -->
+              <path d="M 330,0 L 400,0 L 400,550 L 350,550 Q 320,380 340,240 T 330,0 Z" fill="url(#waterGrad)"/>
+              <text x="360" y="280" fill="#1e3a5f" font-size="9" font-family="'Plus Jakarta Sans', sans-serif" font-weight="800" transform="rotate(90 360,280)" letter-spacing="3">EMBARCADERO WATERWAY</text>
+
+              <!-- Urban City Blocks Base -->
+              <rect x="0" y="0" width="330" height="550" fill="#0d1424"/>
+
+              <!-- Parks and Green Spaces -->
+              <rect x="180" y="160" width="80" height="50" rx="8" fill="#102b22" stroke="#184235" stroke-width="1"/>
+              <text x="188" y="188" fill="#2d6e5a" font-size="8" font-weight="700">Yerba Buena</text>
+
+              <rect x="25" y="410" width="95" height="55" rx="8" fill="#102b22" stroke="#184235" stroke-width="1"/>
+              <text x="36" y="442" fill="#2d6e5a" font-size="8" font-weight="700">South Park</text>
+
+              <!-- Diagonal Market Street Corridor -->
+              <path d="M 0,240 L 350,100" stroke="#1f2c42" stroke-width="18" stroke-linecap="round"/>
+              <path d="M 0,240 L 350,100" stroke="#162032" stroke-width="12" stroke-linecap="round"/>
+              <text x="110" y="190" fill="#3b4f6d" font-size="8" font-weight="bold" transform="rotate(-22 110,190)" letter-spacing="1">MARKET STREET TRANSIT</text>
+
+              <!-- North-South Avenues -->
+              <line x1="55" y1="0" x2="55" y2="550" stroke="#162033" stroke-width="6"/>
+              <line x1="135" y1="0" x2="135" y2="550" stroke="#1c2840" stroke-width="8"/>
+              <text x="139" y="80" fill="#314563" font-size="7" font-weight="bold" transform="rotate(90 139,80)">4TH STREET CORRIDOR</text>
+
+              <line x1="215" y1="0" x2="215" y2="550" stroke="#162033" stroke-width="6"/>
+              <line x1="285" y1="0" x2="285" y2="550" stroke="#162033" stroke-width="6"/>
+
+              <!-- East-West Streets -->
+              <line x1="0" y1="70" x2="330" y2="70" stroke="#141d2e" stroke-width="4"/>
+              <line x1="0" y1="140" x2="330" y2="140" stroke="#141d2e" stroke-width="4"/>
+              <line x1="0" y1="320" x2="330" y2="320" stroke="#1c2840" stroke-width="7"/>
+              <text x="15" y="315" fill="#314563" font-size="7" font-weight="bold">FOLSOM BOULEVARD</text>
+              <line x1="0" y1="390" x2="330" y2="390" stroke="#141d2e" stroke-width="4"/>
+              <line x1="0" y1="480" x2="330" y2="480" stroke="#141d2e" stroke-width="4"/>
+            </svg>
+
+            <!-- Dynamic Pin Layer on Map Canvas -->
+            <div id="pins-container" class="absolute inset-0 pointer-events-auto">
+              <!-- Dynamically populated via JS -->
+            </div>
+
+            <!-- Recenter & Map Floating Overlay Button -->
+            <button onclick="recenterProtoMap()" class="absolute top-3 right-3 z-20 w-8 h-8 rounded-xl bg-surface-900/90 backdrop-blur-md border border-surface-700 text-slate-300 hover:text-white flex items-center justify-center text-xs shadow-lg transition">
+              <i class="fa-solid fa-crosshairs"></i>
+            </button>
+
+            <!-- Subterranean Underground Indicator Pill -->
+            <div class="absolute top-3 left-3 z-20 bg-surface-900/90 backdrop-blur-md border border-surface-700/80 px-2.5 py-1 rounded-xl text-[10px] font-medium text-slate-300 flex items-center gap-1.5 shadow-md">
+              <span class="w-1.5 h-1.5 rounded-full bg-brand-400 radar-beacon"></span>
+              <span>SoMa & Union Square View</span>
+            </div>
+
+            <!-- ============================================== -->
+            <!-- TRANSACTION DETAIL MODAL SHEET OVERLAY         -->
+            <!-- ============================================== -->
+            <div id="tx-detail-modal" class="absolute bottom-2 left-2 right-2 z-40 transform translate-y-[120%] transition-transform duration-300 ease-out">
+              <div class="glass-card rounded-3xl p-5 shadow-2xl border border-brand-500/40 bg-surface-900/95 backdrop-blur-2xl space-y-4">
+                
+                <!-- Modal Top Row -->
+                <div class="flex items-start justify-between">
+                  <div class="flex items-center gap-3">
+                    <div id="modal-pin-icon" class="w-10 h-10 rounded-2xl flex items-center justify-center text-surface-950 font-bold text-sm bg-amber-500 shadow-md">
+                      <i class="fa-solid fa-mug-saucer"></i>
+                    </div>
+                    <div>
+                      <h4 id="modal-store-name" class="font-extrabold text-sm text-white tracking-tight leading-none">Blue Bottle Coffee</h4>
+                      <p id="modal-store-address" class="text-[11px] text-slate-400 mt-1">66 Mint St, Financial District</p>
+                    </div>
+                  </div>
+                  <div class="text-right">
+                    <span id="modal-store-amount" class="text-base font-black text-white font-display block">$6.50</span>
+                    <span id="modal-store-time" class="text-[10px] text-slate-400 font-mono">Today, 8:42 AM</span>
+                  </div>
+                </div>
+
+                <!-- Cleaned Entity vs Messy String Box -->
+                <div class="p-3 bg-surface-950 rounded-2xl border border-surface-800 space-y-2 text-xs">
+                  <div class="flex items-center justify-between">
+                    <span class="text-[10px] text-slate-500 font-mono uppercase">Bank Processor Code:</span>
+                    <span id="modal-raw-string" class="font-mono text-rose-400 font-semibold text-[11px]">SQ *BLU-BTL-0948 SF</span>
+                  </div>
+                  <div class="flex items-center justify-between border-t border-surface-850 pt-1.5">
+                    <span class="text-[10px] text-slate-500 font-mono uppercase">Spatial Confidence:</span>
+                    <span class="text-emerald-400 font-semibold text-[11px] flex items-center gap-1">
+                      <i class="fa-solid fa-circle-check text-[10px]"></i> GPS + NFC Terminal Match
+                    </span>
+                  </div>
+                  <div class="border-t border-surface-850 pt-1.5">
+                    <span class="text-[10px] text-brand-400 font-mono uppercase block">Spatial Memory Cue:</span>
+                    <p id="modal-memory-cue" class="text-slate-300 text-[11px] italic mt-0.5">
+                      "Tapped counter 6 minutes after walking out of Powell St BART station."
+                    </p>
+                  </div>
+                </div>
+
+                <!-- Action Button Row -->
+                <div class="grid grid-cols-2 gap-2 pt-1">
+                  <button onclick="closeDetailModal()" class="py-2 rounded-xl bg-surface-800 hover:bg-surface-750 text-slate-300 font-semibold text-xs border border-surface-700 transition">
+                    Dismiss
+                  </button>
+                  <button onclick="triggerVerificationToast()" class="py-2 rounded-xl bg-brand-600 hover:bg-brand-500 text-white font-semibold text-xs transition flex items-center justify-center gap-1.5 shadow-md shadow-brand-600/30">
+                    <i class="fa-solid fa-check"></i> Mark Verified
+                  </button>
+                </div>
+
+              </div>
+            </div>
+
+            <!-- ============================================== -->
+            <!-- DIGITAL & E-COMMERCE DRAWER (EDGE CASE)        -->
+            <!-- ============================================== -->
+            <div id="digital-drawer" class="absolute inset-0 z-40 bg-surface-950/90 backdrop-blur-md transform translate-y-full transition-transform duration-300 ease-out flex flex-col justify-end">
+              <div class="bg-surface-900 border-t border-surface-750 rounded-t-3xl p-5 space-y-4 max-h-[80%] overflow-y-auto">
+                <div class="flex items-center justify-between pb-2 border-b border-surface-800">
+                  <div class="flex items-center gap-2">
+                    <div class="w-7 h-7 rounded-lg bg-indigo-500/20 text-indigo-400 flex items-center justify-center text-xs">
+                      <i class="fa-solid fa-laptop"></i>
+                    </div>
+                    <div>
+                      <h4 class="text-xs font-bold text-white uppercase tracking-wider">Digital & E-Commerce</h4>
+                      <p class="text-[10px] text-slate-400">Non-spatial subscriptions & cloud orders</p>
+                    </div>
+                  </div>
+                  <button onclick="toggleDigitalDrawer()" class="w-7 h-7 rounded-full bg-surface-800 text-slate-400 hover:text-white flex items-center justify-center text-xs">
+                    <i class="fa-solid fa-xmark"></i>
+                  </button>
+                </div>
+
+                <div class="space-y-2 text-xs">
+                  <div class="p-3 bg-surface-850 rounded-xl border border-surface-750 flex items-center justify-between">
+                    <div>
+                      <p class="font-bold text-white">Amazon Prime Membership</p>
+                      <span class="text-[10px] text-slate-400 font-mono">Digital Streaming Subscription</span>
+                    </div>
+                    <span class="font-mono font-bold text-white">$14.99</span>
+                  </div>
+                  <div class="p-3 bg-surface-850 rounded-xl border border-surface-750 flex items-center justify-between">
+                    <div>
+                      <p class="font-bold text-white">DoorDash Delivery</p>
+                      <span class="text-[10px] text-emerald-400 font-mono">Delivered to Home (Fuzzed)</span>
+                    </div>
+                    <span class="font-mono font-bold text-white">$34.50</span>
+                  </div>
+                  <div class="p-3 bg-surface-850 rounded-xl border border-surface-750 flex items-center justify-between">
+                    <div>
+                      <p class="font-bold text-white">Figma Professional Cloud</p>
+                      <span class="text-[10px] text-slate-400 font-mono">Design Software SaaS</span>
+                    </div>
+                    <span class="font-mono font-bold text-white">$15.00</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- ================================================ -->
+          <!-- MULTI-STATE BOTTOM SHEET (Peek, List, Full)      -->
+          <!-- ================================================ -->
+          <div id="bottom-sheet" class="sheet-spring bg-surface-900 border-t border-surface-750/90 rounded-t-3xl shadow-2xl flex flex-col z-30 h-48 shrink-0">
+            
+            <!-- Handle & Sheet Trigger -->
+            <div onclick="cycleSheetState()" class="pt-2.5 pb-2 px-5 flex flex-col items-center cursor-pointer border-b border-surface-800/80 shrink-0">
+              <div class="w-10 h-1 rounded-full bg-slate-600 mb-2"></div>
+              <div class="w-full flex items-center justify-between text-xs">
+                <span class="font-bold text-slate-300 uppercase tracking-wider text-[11px] flex items-center gap-1.5">
+                  <i class="fa-solid fa-layer-group text-brand-400"></i>
+                  <span>Transactions (<span id="sheet-count">8</span>)</span>
+                </span>
+                <span class="text-[10px] text-slate-400 hover:text-white flex items-center gap-1">
+                  <span id="sheet-state-label">Medium</span>
+                  <i id="sheet-icon" class="fa-solid fa-chevron-up text-[9px]"></i>
+                </span>
+              </div>
+            </div>
+
+            <!-- Transaction Items Scroll View -->
+            <div id="sheet-items-container" class="flex-1 overflow-y-auto px-4 py-2 space-y-1.5">
+              <!-- Injected by renderTransactions() -->
+            </div>
+
+          </div>
+
+          <!-- Toast Notification inside phone -->
+          <div id="proto-toast" class="absolute top-16 left-4 right-4 z-50 bg-emerald-600 text-white px-3.5 py-2.5 rounded-2xl shadow-xl text-xs font-semibold flex items-center gap-2 transform -translate-y-20 opacity-0 transition-all duration-300 pointer-events-none">
+            <i class="fa-solid fa-circle-check"></i>
+            <span id="proto-toast-text">Verified Transaction!</span>
+          </div>
+
+        </div>
+      </aside>
+
+    </div>
+  </main>
+
+  <!-- ======================================================== -->
+  <!-- JAVASCRIPT: DATA, INTERACTIONS, SIMULATION               -->
+  <!-- ======================================================== -->
+  <script>
+    // --- 1. DATASET: 8 RICH MAPPED TRANSACTIONS ---
+    const TRANSACTIONS = [
+      {
+        id: "tx-1",
+        name: "Blue Bottle Coffee",
+        rawCode: "SQ *BLU-BTL-0948 SF",
+        category: "dining",
+        catLabel: "Dining & Cafés",
+        amount: 6.50,
+        time: "Oct 24, 8:42 AM",
+        address: "66 Mint St, Financial District",
+        x: 34, // % offset in vector map
+        y: 28,
+        color: "bg-amber-500",
+        hex: "#f59e0b",
+        icon: "fa-mug-saucer",
+        cue: "Morning cappuccino right after exiting Powell BART."
+      },
+      {
+        id: "tx-2",
+        name: "Whole Foods Market",
+        rawCode: "WFM #10294 SOMA SF",
+        category: "groceries",
+        catLabel: "Groceries & Market",
+        amount: 86.40,
+        time: "Oct 23, 6:15 PM",
+        address: "399 4th St, SoMa, San Francisco",
+        x: 44,
+        y: 54,
+        color: "bg-emerald-500",
+        hex: "#10b981",
+        icon: "fa-basket-shopping",
+        cue: "Weekly grocery bag purchased on Thursday walk home."
+      },
+      {
+        id: "tx-3",
+        name: "BART Powell Station",
+        rawCode: "BART FAREGATE #04",
+        category: "transit",
+        catLabel: "Subway Transit",
+        amount: 3.50,
+        time: "Oct 23, 8:10 AM",
+        address: "Market & 4th St, San Francisco",
+        x: 24,
+        y: 35,
+        color: "bg-indigo-500",
+        hex: "#6366f1",
+        icon: "fa-train-subway",
+        cue: "Contactless subway turnstile tap heading downtown."
+      },
+      {
+        id: "tx-4",
+        name: "Apple Union Square",
+        rawCode: "APL *STORE-R072 USQ",
+        category: "retail",
+        catLabel: "Electronics & Retail",
+        amount: 129.00,
+        time: "Oct 21, 2:10 PM",
+        address: "300 Post St, Union Square",
+        x: 58,
+        y: 18,
+        color: "bg-rose-500",
+        hex: "#f43f5e",
+        icon: "fa-bag-shopping",
+        cue: "USB-C charger cable replacement during lunch break."
+      },
+      {
+        id: "tx-5",
+        name: "Tartine Bakery & Cafe",
+        rawCode: "TST* TARTINE BKRY 994",
+        category: "dining",
+        catLabel: "Dining & Bakery",
+        amount: 22.40,
+        time: "Oct 20, 11:30 AM",
+        address: "600 Guerrero St, Mission District",
+        x: 20,
+        y: 72,
+        color: "bg-amber-500",
+        hex: "#f59e0b",
+        icon: "fa-bread-slice",
+        cue: "Sourdough toast and warm pastries with weekend friends."
+      },
+      {
+        id: "tx-6",
+        name: "SFMOMA Museum Store",
+        rawCode: "MOMA-STORE DES 02",
+        category: "retail",
+        catLabel: "Culture & Books",
+        amount: 38.00,
+        time: "Oct 19, 4:20 PM",
+        address: "151 3rd St, Yerba Buena",
+        x: 64,
+        y: 40,
+        color: "bg-cyan-400",
+        hex: "#22d3ee",
+        icon: "fa-book-bookmark",
+        cue: "Design monograph purchased after architectural exhibition."
+      },
+      {
+        id: "tx-7",
+        name: "Target Metreon",
+        rawCode: "TGT #2394 METREON",
+        category: "retail",
+        catLabel: "Department Store",
+        amount: 34.20,
+        time: "Oct 18, 7:45 PM",
+        address: "789 Mission St, San Francisco",
+        x: 62,
+        y: 50,
+        color: "bg-rose-500",
+        hex: "#f43f5e",
+        icon: "fa-cart-shopping",
+        cue: "Home essentials and batteries on Friday evening."
+      },
+      {
+        id: "tx-8",
+        name: "Caltrain 4th & King",
+        rawCode: "CALTRAIN TVM #834",
+        category: "transit",
+        catLabel: "Regional Rail",
+        amount: 7.50,
+        time: "Oct 17, 5:40 PM",
+        address: "700 4th St, Mission Bay",
+        x: 74,
+        y: 78,
+        color: "bg-indigo-500",
+        hex: "#6366f1",
+        icon: "fa-train",
+        cue: "Southbound train ticket to Palo Alto client workshop."
+      }
+    ];
+
+    let currentCategory = "all";
+    let sheetMode = "medium"; // 'peek' | 'medium' | 'full'
+
+    // --- 2. RENDER PINS ONTO MAP CANVAS ---
+    function renderAppPins() {
+      const container = document.getElementById('pins-container');
+      const filtered = TRANSACTIONS.filter(t => currentCategory === 'all' || t.category === currentCategory);
+
+      container.innerHTML = filtered.map(tx => {
+        return `
+          <div onclick="openTransactionDetail('${tx.id}')"
+               class="pin-marker absolute cursor-pointer transform -translate-x-1/2 -translate-y-1/2 group z-20 hover:scale-125 transition-transform duration-200"
+               style="left: ${tx.x}%; top: ${tx.y}%;">
+            <div class="relative flex items-center">
+              <!-- Halo radar beacon -->
+              <div class="absolute -inset-1 rounded-full opacity-40 group-hover:scale-150 transition-transform" style="background-color: ${tx.hex}"></div>
+              
+              <!-- Pin Core Icon -->
+              <div class="w-8 h-8 rounded-full flex items-center justify-center text-surface-950 font-bold text-xs shadow-xl border-2 border-surface-900 ${tx.color}">
+                <i class="fa-solid ${tx.icon} text-[11px]"></i>
+              </div>
+
+              <!-- Price Tag Pill -->
+              <span class="ml-1 px-1.5 py-0.5 rounded-full bg-surface-950/90 text-white font-mono font-bold text-[9px] border border-surface-700 shadow-md">
+                $${tx.amount.toFixed(0)}
+              </span>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // --- 3. RENDER TRANSACTIONS IN BOTTOM SHEET ---
+    function renderSheetList() {
+      const listContainer = document.getElementById('sheet-items-container');
+      const countEl = document.getElementById('sheet-count');
+      const filtered = TRANSACTIONS.filter(t => currentCategory === 'all' || t.category === currentCategory);
+
+      countEl.textContent = filtered.length;
+
+      listContainer.innerHTML = filtered.map(tx => {
+        return `
+          <div onclick="openTransactionDetail('${tx.id}')"
+               class="p-2.5 rounded-2xl bg-surface-850 hover:bg-surface-800 border border-surface-750/60 cursor-pointer flex items-center justify-between transition-all">
+            <div class="flex items-center gap-2.5">
+              <div class="w-7 h-7 rounded-xl flex items-center justify-center text-surface-950 text-xs font-bold ${tx.color}">
+                <i class="fa-solid ${tx.icon} text-[10px]"></i>
+              </div>
+              <div>
+                <p class="text-xs font-bold text-white leading-tight">${tx.name}</p>
+                <p class="text-[10px] text-slate-400 mt-0.5">${tx.address.split(',')[0]} · ${tx.time.split(',')[0]}</p>
+              </div>
+            </div>
+            <span class="font-display font-extrabold text-xs text-white">$${tx.amount.toFixed(2)}</span>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // --- 4. FILTER CATEGORY LOGIC ---
+    function filterAppCategory(cat) {
+      currentCategory = cat;
+
+      document.querySelectorAll('.app-filter-pill').forEach(pill => {
+        pill.classList.remove('bg-brand-600', 'text-white');
+        pill.classList.add('bg-surface-800', 'text-slate-300');
+      });
+
+      const activeBtn = document.getElementById(`pill-${cat}`);
+      if (activeBtn) {
+        activeBtn.classList.remove('bg-surface-800', 'text-slate-300');
+        activeBtn.classList.add('bg-brand-600', 'text-white');
+      }
+
+      renderAppPins();
+      renderSheetList();
+      closeDetailModal();
+    }
+
+    // --- 5. TRANSACTION DETAIL MODAL SHEET ---
+    function openTransactionDetail(id) {
+      const tx = TRANSACTIONS.find(t => t.id === id);
+      if (!tx) return;
+
+      document.getElementById('modal-store-name').textContent = tx.name;
+      document.getElementById('modal-store-address').textContent = tx.address;
+      document.getElementById('modal-store-amount').textContent = `$${tx.amount.toFixed(2)}`;
+      document.getElementById('modal-store-time').textContent = tx.time;
+      document.getElementById('modal-raw-string').textContent = tx.rawCode;
+      document.getElementById('modal-memory-cue').textContent = `"${tx.cue}"`;
+
+      const iconBox = document.getElementById('modal-pin-icon');
+      iconBox.className = `w-10 h-10 rounded-2xl flex items-center justify-center text-surface-950 font-bold text-sm shadow-md ${tx.color}`;
+      iconBox.innerHTML = `<i class="fa-solid ${tx.icon}"></i>`;
+
+      const modal = document.getElementById('tx-detail-modal');
+      modal.classList.remove('translate-y-[120%]');
+      modal.classList.add('translate-y-0');
+    }
+
+    function closeDetailModal() {
+      const modal = document.getElementById('tx-detail-modal');
+      modal.classList.remove('translate-y-0');
+      modal.classList.add('translate-y-[120%]');
+    }
+
+    // --- 6. MULTI-STATE BOTTOM SHEET ---
+    function cycleSheetState() {
+      const sheet = document.getElementById('bottom-sheet');
+      const label = document.getElementById('sheet-state-label');
+      const icon = document.getElementById('sheet-icon');
+
+      if (sheetMode === 'medium') {
+        // Expand to Full
+        sheetMode = 'full';
+        sheet.classList.remove('h-48', 'h-12');
+        sheet.classList.add('h-[72%]');
+        label.textContent = "Full";
+        icon.className = "fa-solid fa-chevron-down text-[9px]";
+      } else if (sheetMode === 'full') {
+        // Minimize to Peek
+        sheetMode = 'peek';
+        sheet.classList.remove('h-[72%]', 'h-48');
+        sheet.classList.add('h-12');
+        label.textContent = "Peek";
+        icon.className = "fa-solid fa-chevron-up text-[9px]";
+      } else {
+        // Restore to Medium
+        sheetMode = 'medium';
+        sheet.classList.remove('h-12', 'h-[72%]');
+        sheet.classList.add('h-48');
+        label.textContent = "Medium";
+        icon.className = "fa-solid fa-chevron-up text-[9px]";
+      }
+    }
+
+    // --- 7. DIGITAL / E-COMMERCE DRAWER ---
+    function toggleDigitalDrawer() {
+      const drawer = document.getElementById('digital-drawer');
+      if (drawer.classList.contains('translate-y-full')) {
+        drawer.classList.remove('translate-y-full');
+        drawer.classList.add('translate-y-0');
+      } else {
+        drawer.classList.remove('translate-y-0');
+        drawer.classList.add('translate-y-full');
+      }
+    }
+
+    // --- 8. RECENTER MAP HINT ---
+    function recenterProtoMap() {
+      showProtoToast("Map view aligned to Downtown SF");
+    }
+
+    function toggleMonthTimeline() {
+      const label = document.getElementById('current-month-label');
+      const total = document.getElementById('app-total-spend');
+      if (label.textContent.includes('OCTOBER')) {
+        label.textContent = 'SEPTEMBER 2026';
+        total.innerHTML = '$1,192.40 <span class="text-[10px] font-normal text-emerald-400 ml-1 font-mono">15 Places</span>';
+        showProtoToast("Loaded September 2026 History");
+      } else {
+        label.textContent = 'OCTOBER 2026';
+        total.innerHTML = '$1,428.60 <span class="text-[10px] font-normal text-emerald-400 ml-1 font-mono">18 Places</span>';
+        showProtoToast("Loaded October 2026 History");
+      }
+    }
+
+    function triggerVerificationToast() {
+      closeDetailModal();
+      showProtoToast("Charge Verified & Spatial Note Saved!");
+    }
+
+    function showProtoToast(text) {
+      const toast = document.getElementById('proto-toast');
+      document.getElementById('proto-toast-text').textContent = text;
+      toast.classList.remove('-translate-y-20', 'opacity-0');
+      toast.classList.add('translate-y-0', 'opacity-100');
+
+      setTimeout(() => {
+        toast.classList.remove('translate-y-0', 'opacity-100');
+        toast.classList.add('-translate-y-20', 'opacity-0');
+      }, 2400);
+    }
+
+    // --- 9. INTERACTIVE MERCHANT DECODER TOOL (CASE STUDY) ---
+    const DECODER_SAMPLES = [
+      {
+        raw: "SQ *BLU-BTL-0948 SF CA",
+        name: "Blue Bottle Coffee — Mint Plaza",
+        address: "66 Mint St, Financial District, SF",
+        category: "Dining & Cafés",
+        status: "Physical Pin #1",
+        catClass: "bg-amber-500/20 text-amber-400 border border-amber-500/30"
+      },
+      {
+        raw: "BART FAREGATE 04 SF",
+        name: "BART Powell Station (NFC Gate 04)",
+        address: "Market & 4th St Subterranean Portal",
+        category: "Transit & Commute",
+        status: "Physical Pin #3",
+        catClass: "bg-indigo-500/20 text-indigo-400 border border-indigo-500/30"
+      },
+      {
+        raw: "TST* TARTINE BKRY 994",
+        name: "Tartine Bakery & Cafe",
+        address: "600 Guerrero St, Mission District, SF",
+        category: "Dining & Bakery",
+        status: "Physical Pin #5",
+        catClass: "bg-amber-500/20 text-amber-400 border border-amber-500/30"
+      },
+      {
+        raw: "AMZN MKTP US*29K (Online)",
+        name: "Amazon Marketplace (Digital Order)",
+        address: "Non-Physical: AWS Datacenter Virginia",
+        category: "Online E-Commerce",
+        status: "Digital Tray",
+        catClass: "bg-purple-500/20 text-purple-400 border border-purple-500/30"
+      }
+    ];
+
+    function setDecoderEntry(index) {
+      const item = DECODER_SAMPLES[index];
+      document.getElementById('decoder-input').textContent = item.raw;
+      document.getElementById('decoder-name').textContent = item.name;
+      document.getElementById('decoder-address').textContent = item.address;
+      
+      const catEl = document.getElementById('decoder-cat');
+      catEl.textContent = item.category;
+      catEl.className = `px-2 py-0.5 rounded text-[10px] font-semibold ${item.catClass}`;
+
+      document.getElementById('decoder-status').textContent = item.status;
+    }
+
+    // --- 10. GLOBAL VIEW MODE SWITCHER ---
+    function switchView(mode) {
+      const caseCol = document.getElementById('editorial-col');
+      const protoCol = document.getElementById('prototype-col');
+
+      const btnSplit = document.getElementById('nav-btn-split');
+      const btnStudy = document.getElementById('nav-btn-study');
+      const btnProto = document.getElementById('nav-btn-proto');
+
+      [btnSplit, btnStudy, btnProto].forEach(b => {
+        b.className = "px-3.5 py-1.5 rounded-xl font-semibold transition-all duration-200 text-slate-400 hover:text-white flex items-center gap-1.5";
+      });
+
+      if (mode === 'split') {
+        btnSplit.className = "px-3.5 py-1.5 rounded-xl font-semibold transition-all duration-200 bg-brand-600 text-white shadow-sm flex items-center gap-1.5";
+        caseCol.className = "lg:col-span-7 space-y-16 transition-all duration-300 pb-24";
+        protoCol.className = "lg:col-span-5 sticky top-20 flex flex-col items-center";
+      } else if (mode === 'study') {
+        btnStudy.className = "px-3.5 py-1.5 rounded-xl font-semibold transition-all duration-200 bg-brand-600 text-white shadow-sm flex items-center gap-1.5";
+        caseCol.className = "lg:col-span-12 max-w-4xl mx-auto space-y-16 transition-all duration-300 pb-24";
+        protoCol.className = "hidden";
+      } else if (mode === 'proto') {
+        btnProto.className = "px-3.5 py-1.5 rounded-xl font-semibold transition-all duration-200 bg-brand-600 text-white shadow-sm flex items-center gap-1.5";
+        caseCol.className = "hidden";
+        protoCol.className = "lg:col-span-12 flex flex-col items-center py-6";
+      }
+    }
+
+    // --- 11. INITIAL RUNTIME BOOTSTRAP ---
+    window.addEventListener('DOMContentLoaded', () => {
+      renderAppPins();
+      renderSheetList();
+    });
+  </script>
+</body>
+</html>
